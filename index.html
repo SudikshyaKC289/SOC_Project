@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d16">
+  <meta name="description" content="THREATWATCH is an educational, simulated Security Operations Center dashboard.">
+  <title>THREATWATCH | Security Operations Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview" aria-label="THREATWATCH home">
+        <span class="brand-mark">T<span>W</span></span>
+        <span class="brand-text"><strong>THREATWATCH</strong><small>SECURITY OPERATIONS</small></span>
+      </a>
+
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="#overview"><span>◫</span> Overview</a>
+        <a class="nav-link" href="#monitor"><span>⌁</span> Live monitor <i class="nav-count" id="navEventCount">0</i></a>
+        <a class="nav-link" href="#threats"><span>◎</span> Threat intelligence</a>
+        <a class="nav-link" href="#incidents"><span>▤</span> Incidents</a>
+        <a class="nav-link" href="#analytics"><span>▥</span> Analytics</a>
+        <a class="nav-link" href="#logs"><span>⌕</span> Log explorer</a>
+        <div class="nav-divider"></div>
+        <div class="workspace-label">LEARNING</div>
+        <a class="nav-link" href="#lab"><span>⌘</span> Investigation lab</a>
+        <a class="nav-link" href="#mitre"><span>▦</span> MITRE reference</a>
+        <a class="nav-link" href="#profile"><span>♙</span> Analyst profile</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="demo-note"><span class="status-dot"></span><span><strong>Simulation mode</strong><small>Demo data only · No live telemetry</small></span></div>
+        <button class="sidebar-action" id="resetDemoButton" type="button">↺ <span>Reset demo data</span></button>
+        <div class="sidebar-user">
+          <div class="avatar">SK</div>
+          <div><strong>Analyst SK</strong><small>Portfolio workspace</small></div>
+          <span class="user-menu-dot">•••</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuButton" type="button" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumb">Security Operations <span>/</span> <strong>Overview</strong></div>
+        <div class="topbar-right">
+          <span class="environment-pill"><span class="status-dot"></span> DEMO ENVIRONMENT</span>
+          <span class="topbar-time" id="clock">--:--:-- UTC</span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <section class="page-heading" id="overview">
+          <div>
+            <div class="eyebrow"><span class="status-dot"></span> SOC WORKSPACE <span class="eyebrow-separator">/</span> SIMULATED TELEMETRY</div>
+            <h1>Security Operations <span>Center</span></h1>
+            <p>Monitor simulated activity, investigate alerts, and practice incident response.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="button button-secondary" id="generateButton" type="button">＋ Generate demo event</button>
+            <button class="button button-primary" id="generatorToggle" type="button"><span class="pulse-dot"></span> Start live simulation</button>
+          </div>
+        </section>
+
+        <div class="simulation-banner">
+          <span class="banner-icon">ⓘ</span>
+          <span><strong>Educational simulation.</strong> Events, intelligence, and outcomes on this dashboard are fictional. THREATWATCH does not monitor real systems or detect real attacks.</span>
+          <button type="button" class="banner-dismiss" aria-label="Dismiss notice" id="dismissBanner">×</button>
+        </div>
+
+        <section class="metrics-grid" aria-label="Security overview metrics">
+          <article class="metric-card"><div class="metric-top"><span>Total security events</span><span class="metric-icon cyan">⌁</span></div><strong id="metricEvents">0</strong><small><span class="metric-indicator cyan-text">●</span> Simulated event records</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Critical alerts</span><span class="metric-icon red">!</span></div><strong id="metricCritical">0</strong><small><span class="metric-indicator red-text">●</span> Require immediate review</small></article>
+          <article class="metric-card"><div class="metric-top"><span>High-priority alerts</span><span class="metric-icon orange">↗</span></div><strong id="metricHigh">0</strong><small><span class="metric-indicator orange-text">●</span> Prioritize investigation</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Medium-priority alerts</span><span class="metric-icon yellow">⌁</span></div><strong id="metricMedium">0</strong><small><span class="metric-indicator yellow-text">●</span> Monitor and triage</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Resolved incidents</span><span class="metric-icon green">✓</span></div><strong id="metricResolved">0</strong><small>Recorded in this demo</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Active investigations</span><span class="metric-icon purple">◉</span></div><strong id="metricActive">0</strong><small>Open or in progress</small></article>
+        </section>
+
+        <section class="overview-grid">
+          <article class="panel status-panel">
+            <div class="panel-heading"><div><div class="eyebrow">ENVIRONMENT HEALTH</div><h2>System security status</h2></div><span class="badge badge-green"><span class="status-dot"></span> SIMULATED</span></div>
+            <div class="health-content">
+              <div class="health-ring"><div><strong>DEMO</strong><small>ENVIRONMENT</small></div></div>
+              <div class="health-details">
+                <div class="health-row"><span><i class="legend-dot green-bg"></i>Telemetry source</span><strong>Sample data</strong></div>
+                <div class="health-row"><span><i class="legend-dot cyan-bg"></i>Event generator</span><strong id="generatorStatus">Stopped</strong></div>
+                <div class="health-row"><span><i class="legend-dot yellow-bg"></i>External integrations</span><strong>Disabled</strong></div>
+                <p class="muted-copy">This status describes the demo interface only; it is not an assessment of a real environment.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><div class="eyebrow">ACTIVITY SNAPSHOT</div><h2>Alert severity</h2></div><span class="chart-period">CURRENT VIEW</span></div>
+            <div class="chart-wrap chart-small"><canvas id="severityChart" aria-label="Alert severity distribution chart"></canvas></div>
+          </article>
+        </section>
+
+        <section class="panel feed-panel" id="monitor">
+          <div class="panel-heading feed-heading">
+            <div><div class="eyebrow">SIMULATED TELEMETRY</div><h2>Live security monitor <span class="live-label"><i></i> DEMO FEED</span></h2></div>
+            <div class="filter-row">
+              <label class="sr-only" for="severityFilter">Filter by severity</label>
+              <select id="severityFilter" class="select-control"><option value="all">All severities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+              <label class="sr-only" for="typeFilter">Filter by event type</label>
+              <select id="typeFilter" class="select-control"><option value="all">All event types</option></select>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>TIMESTAMP</th><th>SOURCE IP</th><th>EVENT TYPE</th><th>SEVERITY</th><th>DESTINATION</th><th>STATUS</th><th></th></tr></thead>
+              <tbody id="eventTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="eventCountLabel">Showing 0 events</span><span>All IPs and activity are fictional.</span></div>
+        </section>
+
+        <section class="panel" id="threats">
+          <div class="panel-heading"><div><div class="eyebrow">SIMULATED THREAT INTELLIGENCE</div><h2>Observed indicators</h2></div><span class="badge badge-cyan">FICTIONAL DATA</span></div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>INDICATOR</th><th>CATEGORY</th><th>RISK LEVEL</th><th>SIMULATED ORIGIN</th><th>STATUS</th></tr></thead>
+              <tbody id="threatTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span>Illustrative indicators only; do not use for blocking decisions.</span><span>Geographic labels are simulated.</span></div>
+        </section>
+
+        <section class="panel" id="incidents">
+          <div class="panel-heading"><div><div class="eyebrow">INCIDENT RESPONSE CENTER</div><h2>Investigation queue</h2></div><span class="badge badge-muted" id="incidentCountBadge">0 incidents</span></div>
+          <div class="incident-grid" id="incidentList"></div>
+        </section>
+
+        <section class="analytics-section" id="analytics">
+          <div class="section-title"><div><div class="eyebrow">DETECTION & RESPONSE</div><h2>Security analytics</h2></div><span class="muted-copy">Charts reflect the current event filters.</span></div>
+          <div class="chart-grid">
+            <article class="panel chart-panel"><div class="panel-heading"><div><div class="eyebrow">EVENT VOLUME</div><h2>Security events over time</h2></div></div><div class="chart-wrap"><canvas id="timelineChart" aria-label="Security events over time chart"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><div class="eyebrow">AUTHENTICATION</div><h2>Failed login attempts</h2></div></div><div class="chart-wrap"><canvas id="failedChart" aria-label="Failed login attempts chart"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><div class="eyebrow">RESPONSE OUTCOMES</div><h2>Incident resolution</h2></div></div><div class="chart-wrap"><canvas id="resolutionChart" aria-label="Incident resolution chart"></canvas></div></article>
+            <article class="panel chart-panel"><div class="panel-heading"><div><div class="eyebrow">EVENT CLASSIFICATION</div><h2>Event categories</h2></div></div><div class="chart-wrap"><canvas id="categoryChart" aria-label="Event categories chart"></canvas></div></article>
+          </div>
+        </section>
+
+        <section class="panel log-panel" id="logs">
+          <div class="panel-heading"><div><div class="eyebrow">SEARCHABLE SAMPLE DATA</div><h2>Log explorer</h2></div><span class="badge badge-muted">AUTH + SYSTEM LOGS</span></div>
+          <div class="log-controls">
+            <label class="search-box"><span>⌕</span><input id="logSearch" type="search" placeholder="Search message, host, user, IP…"></label>
+            <label><span class="sr-only">From date</span><input class="input-control" id="dateFrom" type="date" title="From date"></label>
+            <label><span class="sr-only">To date</span><input class="input-control" id="dateTo" type="date" title="To date"></label>
+            <label><span class="sr-only">Log severity</span><select id="logSeverity" class="select-control"><option value="all">All severities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Info</option></select></label>
+            <button class="button button-secondary button-small" id="clearLogFilters" type="button">Clear filters</button>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table log-table">
+              <thead><tr><th>TIMESTAMP</th><th>HOST</th><th>SEVERITY</th><th>USER</th><th>MESSAGE</th><th></th></tr></thead>
+              <tbody id="logTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="logCountLabel">Showing 0 logs</span><span class="pattern-key"><i></i> Highlighted = suspicious pattern in this simulation</span></div>
+        </section>
+
+        <section class="learning-section" id="lab">
+          <div class="section-title"><div><div class="eyebrow">PRACTICE & LEARN</div><h2>SOC investigation lab</h2></div><span class="badge badge-cyan">SIMULATED SCENARIOS</span></div>
+          <div class="scenario-grid" id="scenarioList"></div>
+        </section>
+
+        <section class="panel mitre-panel" id="mitre">
+          <div class="panel-heading"><div><div class="eyebrow">EDUCATIONAL REFERENCE</div><h2>MITRE ATT&amp;CK® mapping</h2></div><span class="badge badge-muted">SIMULATED ALERTS</span></div>
+          <p class="muted-copy">These mappings are illustrative learning references, not confirmed attribution or a claim that the simulated event represents a real technique.</p>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr><th>SIMULATED ALERT</th><th>TACTIC</th><th>TECHNIQUE</th><th>REFERENCE</th></tr></thead>
+              <tbody id="mitreTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="profile-grid" id="profile">
+          <article class="panel profile-card">
+            <div class="eyebrow">ANALYST PROFILE</div>
+            <div class="profile-main"><div class="profile-avatar">SK</div><div><h2>Analyst SK</h2><p>Aspiring SOC Analyst</p></div><span class="badge badge-yellow">IN PROGRESS</span></div>
+            <div class="profile-details"><div><span>Focus</span><strong>Blue Team · SIEM · Threat Detection · Incident Response</strong></div><div><span>Learning status</span><strong>In Progress</strong></div></div>
+          </article>
+          <article class="panel profile-card future-card">
+            <div class="eyebrow">GROWTH TRACKER</div><h2>Next milestones</h2>
+            <div class="milestone"><span class="milestone-icon">01</span><div><strong>Future certifications</strong><small>CompTIA Security+ · CompTIA CySA+ (planned)</small></div><span class="milestone-state">PLANNED</span></div>
+            <div class="milestone"><span class="milestone-icon">02</span><div><strong>Future projects</strong><small>SIEM detection rules · Incident response playbooks</small></div><span class="milestone-state">PLANNED</span></div>
+            <div class="milestone"><span class="milestone-icon">03</span><div><strong>Achievements</strong><small>Add completed labs, write-ups, and milestones here.</small></div><span class="milestone-state">OPEN</span></div>
+          </article>
+        </section>
+
+        <footer class="footer"><span>THREATWATCH <span class="footer-separator">/</span> Educational SOC simulation</span><span>No real telemetry · No external system connections</span></footer>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading"><div><div class="eyebrow" id="modalEyebrow">INCIDENT RESPONSE</div><h2 id="modalTitle">Investigation</h2></div><button class="icon-button" id="modalClose" type="button" aria-label="Close dialog">×</button></div>
+      <div id="modalBody"></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
